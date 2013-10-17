@@ -1,0 +1,14 @@
+development:
+  adapter: mysql2
+  database: guidify
+  user: root
+  pool: 5
+  timeout: 5000
+
+test:
+  adapter: mysql2
+  database: guidify_test
+  user: root
+  pool: 5
+  timeout: 5000
+
