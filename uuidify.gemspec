@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/grant-olson/uuidify"
   s.license = "BSD 3 Clause"
 
-  s.add_dependency "rails", "~> 3.2.13"
+  s.add_dependency "rails", ">= 3.2.13"
   s.add_dependency "uuidtools", "~> 2.1.4"
 
   s.add_development_dependency "mysql2"
