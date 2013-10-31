@@ -7,7 +7,7 @@ require "uuidify/version"
 Gem::Specification.new do |s|
   s.name = "uuidify"
   s.version = Uuidify::VERSION
-  s.date = "2013-10-17"
+  s.date = "2013-10-31"
   s.summary = "Add uuids to any ActiveRecord model."
 
   s.authors = ["Grant Olson"]
