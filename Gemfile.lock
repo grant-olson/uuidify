@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    uuidify (0.3.0)
-      rails (~> 3.2.13)
+    uuidify (0.4.0.pre)
+      rails (>= 3.2.13)
       uuidtools (~> 2.1.4)
 
 GEM
