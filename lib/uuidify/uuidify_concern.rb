@@ -8,6 +8,12 @@ module Uuidify::UuidifyConcern
   
   included do
     before_destroy :destroy_uuid
+
+    scope :with_raw_uids, -> {
+      joins("INNER JOIN uuidify_uuids ON uuidify_uuids.model_id = #{self.table_name}.id").
+      where("uuidify_uuids.model_name = '#{self.name}'").
+      select("#{self.table_name}.*, uuidify_uuids.model_uuid AS raw_uid")
+    }
   end
 
   module ClassMethods
@@ -41,7 +47,7 @@ module Uuidify::UuidifyConcern
       uuid = Uuidify::Uuid.create(:model_name => model_name, :model_id => self.id, :model_uuid => new_uuid)
       uuid.save!
     end
-    
+
     UUIDTools::UUID.parse_raw(uuid.model_uuid)
   end
 
