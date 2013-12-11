@@ -19,7 +19,12 @@ To get/set uuids:
     Foo.new.uuid
     Foo.new.uuid = UUIDTools::UUID.timestamp_create
 
- To gc orphan records:
+Uuidify should hook into ActiveRecord's `#destroy` and automatically
+clean up entries.  However, if you bypass `#destroy` or remove uuidify
+from a given model, you might need to run manual garbage collection to
+clean up existing stale uuids.
+
+To gc orphan records:
 
     Foo.garbage_collect_uuids # single model
     Uuidify.garbage_collect_uuids # everything, even if the model doesn't exist in the source
