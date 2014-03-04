@@ -19,7 +19,9 @@ module Uuidify::UuidifyConcern
   module ClassMethods
     # .find_by_uuid.  Used lookup so we know it's not rails magic.
     def lookup_uuid(uuid)
-      uuid = Uuidify::Uuid.where(:model_uuid => uuid.raw, :model_name => self.to_s).first
+      uuid = Uuidify::Uuid.uuid_to_sql_string(uuid)
+      
+      uuid = Uuidify::Uuid.where(:model_uuid => uuid, :model_name => self.to_s).first
       uuid ? find(uuid.model_id) : nil
     end
 
@@ -31,6 +33,8 @@ module Uuidify::UuidifyConcern
         end
       end
     end
+
+
   end
 
   # Return a UUID, creating it if needed.
@@ -43,18 +47,24 @@ module Uuidify::UuidifyConcern
     uuid = Uuidify::Uuid.where(:model_name => model_name, :model_id => model_id).first
 
     if uuid.nil?
-      new_uuid = UUIDTools::UUID.timestamp_create.raw
+      new_uuid = UUIDTools::UUID.timestamp_create
+      new_uuid = Uuidify::Uuid.uuid_to_sql_string(new_uuid)
+
       uuid = Uuidify::Uuid.create(:model_name => model_name, :model_id => self.id, :model_uuid => new_uuid)
       uuid.save!
     end
 
-    UUIDTools::UUID.parse_raw(uuid.model_uuid)
+    Uuidify::Uuid.uuid_from_sql_string(uuid.model_uuid)
   end
+
 
   # Assign a UUID that came from an external source.
   def uuid= new_uuid
     abort_if_unsaved!
-    Uuidify::Uuid.where(:model_name => self.class.to_s, :model_id => self.id).first_or_create!.update_column(:model_uuid, new_uuid.raw)
+
+    uuid_value = Uuidify::Uuid.uuid_to_sql_string(new_uuid)
+    
+    Uuidify::Uuid.where(:model_name => self.class.to_s, :model_id => self.id).first_or_create!.update_column(:model_uuid, uuid_value)
   end
   
   private

@@ -33,7 +33,9 @@ describe "uuidify" do
   it "doesn't find the wrong model" do
     foo = Foo.create
     bad_uuid = UUIDTools::UUID.timestamp_create
-    Uuidify::Uuid.create(:model_name => "Baz", :model_id => foo.id, :model_uuid => bad_uuid)
+    Uuidify::Uuid.create(:model_name => "Baz",
+                         :model_id => foo.id,
+                         :model_uuid => Uuidify::Uuid.uuid_to_sql_string(bad_uuid))
     Foo.lookup_uuid(bad_uuid).should be_nil
   end
 
@@ -95,7 +97,10 @@ describe "uuidify" do
     it "has global gc that handles orphaned CLASSES" do
       foo1_uuid = foo1.uuid
 
-      Uuidify::Uuid.create(:model_name => "NonexistantClass", :model_id => 1, :model_uuid => UUIDTools::UUID.timestamp_create)
+      
+      Uuidify::Uuid.create(:model_name => "NonexistantClass",
+                           :model_id => 1,
+                           :model_uuid => Uuidify::Uuid.uuid_to_sql_string(UUIDTools::UUID.timestamp_create))
       Uuidify.garbage_collect_uuids
 
       Uuidify::Uuid.where(:model_name => "NonexistantClass").should be_empty
